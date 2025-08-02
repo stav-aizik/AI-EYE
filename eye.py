@@ -15,7 +15,29 @@ import threading
 import pyautogui
 import math
 
-plt.rcParams['font.family'] = 'Arial Unicode MS'
+# Global font sizes for clear, proportional plots
+TITLE_FONT_SIZE = 22
+LABEL_FONT_SIZE = 18
+TICK_FONT_SIZE = 16
+LEGEND_FONT_SIZE = 16
+
+plt.rcParams.update({
+    'font.family': 'Arial Unicode MS',
+    'figure.dpi': 300,
+    'savefig.dpi': 300,
+    'font.size': TICK_FONT_SIZE,
+    'axes.titlesize': TITLE_FONT_SIZE,
+    'axes.labelsize': LABEL_FONT_SIZE,
+    'xtick.labelsize': TICK_FONT_SIZE,
+    'ytick.labelsize': TICK_FONT_SIZE,
+    'legend.fontsize': LEGEND_FONT_SIZE,
+    'figure.titlesize': TITLE_FONT_SIZE + 2,
+    'axes.linewidth': 1.5,
+    'grid.linewidth': 0.8,
+    'lines.linewidth': 2.5,
+    'axes.grid': True,
+    'grid.alpha': 0.3,
+})
 
 # English comment
 CALIB_GRID = 5
@@ -2060,7 +2082,7 @@ def plot_advanced_fixations(session_id):
         mlines.Line2D([], [], color='black', linestyle='--', label='Moving Avg Duration'),
         mlines.Line2D([], [], color='orange', linestyle='-', label='Moving Avg Speed'),
     ]
-    plt.legend(handles=legend_elements, loc='upper right')
+    plt.legend(handles=legend_elements, loc='upper right', fontsize=LEGEND_FONT_SIZE)
     plt.title("Fixation Duration & Speed with Behavior Coloring")
     plt.xlabel("Fixation #")
     plt.ylabel("Time (sec) / Speed")
@@ -2278,13 +2300,13 @@ def plot_word_timings(session_id):
         # English comment
         ax.set_xlabel("Time from start of reading (seconds)\n"+
                       f"Total reading time: {total_reading_time:.1f} seconds",
-                      fontweight='bold', fontsize=14)
+                      fontweight='bold', fontsize=LABEL_FONT_SIZE)
         ax.set_ylabel("Words in the text (in order of appearance)",
-                      fontweight='bold', fontsize=14)
+                      fontweight='bold', fontsize=LABEL_FONT_SIZE)
 
         # English comment
         ax.set_yticks(range(len(unique_words)))
-        ax.set_yticklabels(unique_words, fontsize=11)
+        ax.set_yticklabels(unique_words, fontsize=TICK_FONT_SIZE)
 
         # English comment
         if 'duration' in df.columns:
@@ -2316,7 +2338,8 @@ def plot_word_timings(session_id):
 
         ax.legend(handles=legend_elements, loc='upper right',
                   title="DOT COLORS = Position in Text",
-                  title_fontsize=13, fontsize=11, framealpha=0.95)
+                  title_fontsize=TITLE_FONT_SIZE, fontsize=LEGEND_FONT_SIZE,
+                  framealpha=0.95)
 
         # English comment
         size_explanation = """DOT SIZE EXPLANATION:
@@ -2389,10 +2412,10 @@ Yellow labels = Words that took you the longest time"""
             # English comment
             ax.set_xlabel("Time from start of reading (seconds)\n"+
                           f"Total reading time: {total_reading_time:.1f} seconds",
-                          fontweight='bold', fontsize=14)
+                          fontweight='bold', fontsize=LABEL_FONT_SIZE)
             ax.set_ylabel("Selected interesting words only\n"+
                           f"(Showing {len(interesting_words)} out of {num_words} total words)",
-                          fontweight='bold', fontsize=14)
+                          fontweight='bold', fontsize=LABEL_FONT_SIZE)
 
             # English comment
             from matplotlib.lines import Line2D
@@ -2408,7 +2431,8 @@ Yellow labels = Words that took you the longest time"""
             ]
             ax.legend(handles=legend_elements, loc='upper right',
                       title="DOT COLORS = Why this word is interesting",
-                      title_fontsize=13, fontsize=11, framealpha=0.95)
+                      title_fontsize=TITLE_FONT_SIZE, fontsize=LEGEND_FONT_SIZE,
+                      framealpha=0.95)
 
         # English comment
         explanation = f"""SELECTIVE VIEW EXPLANATION:
@@ -2447,10 +2471,10 @@ We filtered out common/easy words to focus on the challenging ones"""
         ax1.axhline(y=200, color='green', linestyle=':', linewidth=2,
                     label='Typical adult: ~200 WPM')
 
-        ax1.set_title(f'Your Reading Speed Over Time', fontweight='bold', fontsize=16)
-        ax1.set_xlabel('Time from start (seconds)', fontweight='bold', fontsize=14)
-        ax1.set_ylabel('Reading Speed\n(Words Per Minute)', fontweight='bold', fontsize=14)
-        ax1.legend(fontsize=12)
+        ax1.set_title(f'Your Reading Speed Over Time', fontweight='bold', fontsize=TITLE_FONT_SIZE)
+        ax1.set_xlabel('Time from start (seconds)', fontweight='bold', fontsize=LABEL_FONT_SIZE)
+        ax1.set_ylabel('Reading Speed\n(Words Per Minute)', fontweight='bold', fontsize=LABEL_FONT_SIZE)
+        ax1.legend(fontsize=LEGEND_FONT_SIZE)
         ax1.grid(True, alpha=0.3)
 
         # English comment
@@ -2479,11 +2503,11 @@ We filtered out common/easy words to focus on the challenging ones"""
             bars = ax2.barh(range(len(word_times)), word_times.values,
                             color=colors, alpha=0.8, edgecolor='black')
             ax2.set_yticks(range(len(word_times)))
-            ax2.set_yticklabels(word_times.index, fontsize=12)
+            ax2.set_yticklabels(word_times.index, fontsize=TICK_FONT_SIZE)
             ax2.set_xlabel('Total time spent reading this word (seconds)',
-                           fontweight='bold', fontsize=14)
-            ax2.set_ylabel('Words that took most time', fontweight='bold', fontsize=14)
-            ax2.set_title('Which Words Were Hardest for You?', fontweight='bold', fontsize=16)
+                           fontweight='bold', fontsize=LABEL_FONT_SIZE)
+            ax2.set_ylabel('Words that took most time', fontweight='bold', fontsize=LABEL_FONT_SIZE)
+            ax2.set_title('Which Words Were Hardest for You?', fontweight='bold', fontsize=TITLE_FONT_SIZE)
 
             # English comment
             for i, (bar, value) in enumerate(zip(bars, word_times.values)):
@@ -2525,10 +2549,10 @@ Green = Normal speed"""
         ax1.axhline(y=avg_speed, color='red', linestyle='--', linewidth=2,
                     label=f'Average: {avg_speed:.0f} WPM')
 
-        ax1.set_title('Reading Speed Over Time', fontweight='bold', fontsize=14)
+        ax1.set_title('Reading Speed Over Time', fontweight='bold', fontsize=TITLE_FONT_SIZE)
         ax1.set_xlabel('Time (seconds)', fontweight='bold')
         ax1.set_ylabel('Speed (Words/Min)', fontweight='bold')
-        ax1.legend()
+        ax1.legend(fontsize=LEGEND_FONT_SIZE)
         ax1.grid(True, alpha=0.3)
 
         # English comment
@@ -2542,10 +2566,10 @@ Green = Normal speed"""
             ax2.axvline(df['duration'].median(), color='orange', linestyle='--', linewidth=3,
                         label=f'Median: {df["duration"].median():.2f}s')
 
-            ax2.set_title('How Long You Spent on Each Word', fontweight='bold', fontsize=14)
+            ax2.set_title('How Long You Spent on Each Word', fontweight='bold', fontsize=TITLE_FONT_SIZE)
             ax2.set_xlabel('Time per word (seconds)', fontweight='bold')
             ax2.set_ylabel('Number of words', fontweight='bold')
-            ax2.legend()
+            ax2.legend(fontsize=LEGEND_FONT_SIZE)
             ax2.grid(True, alpha=0.3)
 
         # English comment
@@ -2557,8 +2581,8 @@ Green = Normal speed"""
             bars = ax3.barh(range(len(top_words)), top_words.values,
                             color=colors, alpha=0.8, edgecolor='black')
             ax3.set_yticks(range(len(top_words)))
-            ax3.set_yticklabels(top_words.index, fontsize=11)
-            ax3.set_title('Hardest Words (Took Most Time)', fontweight='bold', fontsize=14)
+            ax3.set_yticklabels(top_words.index, fontsize=TICK_FONT_SIZE)
+            ax3.set_title('Hardest Words (Took Most Time)', fontweight='bold', fontsize=TITLE_FONT_SIZE)
             ax3.set_xlabel('Total time (seconds)', fontweight='bold')
             ax3.grid(True, alpha=0.3, axis='x')
 
@@ -2626,8 +2650,8 @@ Green = Normal speed"""
         main_title = f'Complete Reading Performance Overview'
         subtitle = f'Session: {session_id}  {num_words} words  {total_reading_time / 60:.1f} minutes total'
 
-    fig.suptitle(main_title, fontsize=20, fontweight='bold', y=0.98)
-    fig.text(0.5, 0.94, subtitle, fontsize=14, ha='center', style='italic')
+    fig.suptitle(main_title, fontsize=TITLE_FONT_SIZE + 2, fontweight='bold', y=0.98)
+    fig.text(0.5, 0.94, subtitle, fontsize=LABEL_FONT_SIZE, ha='center', style='italic')
 
     # English comment
     plt.tight_layout()
@@ -3421,15 +3445,6 @@ def main():
 
 # ========== IMPROVED PLOTS FUNCTIONS ==========
 
-# English comment
-plt.rcParams.update({
-    'figure.dpi': 300, 'savefig.dpi': 300, 'font.size': 14,
-    'axes.titlesize': 18, 'axes.labelsize': 16, 'xtick.labelsize': 14,
-    'ytick.labelsize': 14, 'legend.fontsize': 12, 'figure.titlesize': 20,
-    'axes.linewidth': 1.5, 'grid.linewidth': 0.8, 'lines.linewidth': 2.5,
-    'font.family': 'DejaVu Sans', 'axes.grid': True, 'grid.alpha': 0.3,
-})
-
 
 def save_high_quality_plot(filename, bbox_inches='tight', pad_inches=0.3):
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
@@ -3492,9 +3507,9 @@ def generate_all_publication_plots(session_id, csv_file="reading_trace.csv"):
 
         bars = ax1.bar(words, times, color=colors, alpha=0.8, edgecolor='black', linewidth=1)
         ax1.set_title('Which Words Took You Longest to Read?\n(Red = Slow, Orange = Medium, Green = Fast)',
-                      fontweight='bold', fontsize=16, pad=20)
-        ax1.set_xlabel('Words', fontweight='bold', fontsize=14)
-        ax1.set_ylabel('Average Time Spent (seconds)', fontweight='bold', fontsize=14)
+                      fontweight='bold', fontsize=TITLE_FONT_SIZE, pad=20)
+        ax1.set_xlabel('Words', fontweight='bold', fontsize=LABEL_FONT_SIZE)
+        ax1.set_ylabel('Average Time Spent (seconds)', fontweight='bold', fontsize=LABEL_FONT_SIZE)
         ax1.tick_params(axis='x', rotation=45)
         ax1.grid(True, alpha=0.3, axis='y')
 
@@ -3598,10 +3613,10 @@ def generate_all_publication_plots(session_id, csv_file="reading_trace.csv"):
         ax2.plot(elapsed_minutes[:len(eye_speeds)], moving_avg, color='green', linewidth=2, alpha=0.8,
                  label='Moving Average')
 
-        ax2.set_title('Eye Movement Speed Over Time', fontweight='bold', fontsize=16)
+        ax2.set_title('Eye Movement Speed Over Time', fontweight='bold', fontsize=TITLE_FONT_SIZE)
         ax2.set_xlabel('Time Elapsed (minutes)', fontweight='bold')
         ax2.set_ylabel('Eye Movement Speed (pixels/sec)', fontweight='bold')
-        ax2.legend()
+        ax2.legend(fontsize=LEGEND_FONT_SIZE)
         ax2.grid(True, alpha=0.3)
 
         # English comment
@@ -3670,9 +3685,9 @@ def generate_all_publication_plots(session_id, csv_file="reading_trace.csv"):
         bars1 = ax1.barh(range(len(word_stats)), word_stats['total_time'],
                          color='steelblue', alpha=0.8)
         ax1.set_yticks(range(len(word_stats)))
-        ax1.set_yticklabels(word_stats.index, fontsize=12)
+        ax1.set_yticklabels(word_stats.index, fontsize=TICK_FONT_SIZE)
         ax1.set_xlabel('Total Time (seconds)', fontweight='bold')
-        ax1.set_title('Top 20 Words - Total Reading Time', fontweight='bold', fontsize=16)
+        ax1.set_title('Top 20 Words - Total Reading Time', fontweight='bold', fontsize=TITLE_FONT_SIZE)
 
         for i, (bar, value) in enumerate(zip(bars1, word_stats['total_time'])):
             ax1.text(value + 0.01, bar.get_y() + bar.get_height() / 2,
@@ -3682,9 +3697,9 @@ def generate_all_publication_plots(session_id, csv_file="reading_trace.csv"):
         bars2 = ax2.barh(range(len(word_stats)), word_stats['fixation_count'],
                          color='forestgreen', alpha=0.8)
         ax2.set_yticks(range(len(word_stats)))
-        ax2.set_yticklabels(word_stats.index, fontsize=12)
+        ax2.set_yticklabels(word_stats.index, fontsize=TICK_FONT_SIZE)
         ax2.set_xlabel('Number of Fixations', fontweight='bold')
-        ax2.set_title('Top 20 Words - Fixation Count', fontweight='bold', fontsize=16)
+        ax2.set_title('Top 20 Words - Fixation Count', fontweight='bold', fontsize=TITLE_FONT_SIZE)
 
         for i, (bar, value) in enumerate(zip(bars2, word_stats['fixation_count'])):
             ax2.text(value + 0.1, bar.get_y() + bar.get_height() / 2,
@@ -3709,8 +3724,8 @@ def generate_all_publication_plots(session_id, csv_file="reading_trace.csv"):
         colors_pie = ordered_colors[:len(behavior_counts)]
 
         ax1.pie(behavior_counts.values, labels=labels_with_nums, colors=colors_pie,
-                startangle=90, textprops={'fontsize': 11, 'fontweight': 'bold'})
-        ax1.set_title('Reading Behavior Types', fontweight='bold', fontsize=14)
+                startangle=90, textprops={'fontsize': TICK_FONT_SIZE, 'fontweight': 'bold'})
+        ax1.set_title('Reading Behavior Types', fontweight='bold', fontsize=TITLE_FONT_SIZE)
 
         # English comment
         total_time = df['duration'].sum()
@@ -3744,8 +3759,8 @@ def generate_all_publication_plots(session_id, csv_file="reading_trace.csv"):
         time_colors = ordered_colors[:len(time_data_sorted)]
 
         ax2.pie(time_data, labels=time_labels, colors=time_colors, startangle=90,
-                textprops={'fontsize': 11, 'fontweight': 'bold'})
-        ax2.set_title('Time Spent on Each Reading Type', fontweight='bold', fontsize=14)
+                textprops={'fontsize': TICK_FONT_SIZE, 'fontweight': 'bold'})
+        ax2.set_title('Time Spent on Each Reading Type', fontweight='bold', fontsize=TITLE_FONT_SIZE)
 
         # English comment
         avg_duration = df['duration'].mean()
@@ -3776,8 +3791,8 @@ def generate_all_publication_plots(session_id, csv_file="reading_trace.csv"):
 
         if speed_data_clean:
             ax3.pie(speed_data_clean, labels=speed_labels_clean, colors=speed_colors_clean,
-                    startangle=90, textprops={'fontsize': 11, 'fontweight': 'bold'})
-        ax3.set_title('Reading Speed Distribution', fontweight='bold', fontsize=14)
+                    startangle=90, textprops={'fontsize': TICK_FONT_SIZE, 'fontweight': 'bold'})
+        ax3.set_title('Reading Speed Distribution', fontweight='bold', fontsize=TITLE_FONT_SIZE)
 
         plt.tight_layout()
         save_high_quality_plot(f'reading_statistics_pies_{session_id}')
@@ -3799,15 +3814,15 @@ def generate_all_publication_plots(session_id, csv_file="reading_trace.csv"):
         speed_colors = ['lightgreen' if reading_speed >= average_reading_speed else 'orange', 'lightblue']
 
         bars = ax1.bar(speed_labels, speeds, color=speed_colors, alpha=0.8, edgecolor='black', linewidth=2)
-        ax1.set_title('How Fast Do You Read?\n(Words Per Minute)', fontweight='bold', fontsize=16)
-        ax1.set_ylabel('Words Per Minute (WPM)', fontweight='bold', fontsize=14)
+        ax1.set_title('How Fast Do You Read?\n(Words Per Minute)', fontweight='bold', fontsize=TITLE_FONT_SIZE)
+        ax1.set_ylabel('Words Per Minute (WPM)', fontweight='bold', fontsize=LABEL_FONT_SIZE)
         ax1.grid(True, alpha=0.3, axis='y')
 
         # English comment
         for bar, speed in zip(bars, speeds):
             height = bar.get_height()
             ax1.text(bar.get_x() + bar.get_width() / 2., height + 5,
-                     f'{speed:.0f}', ha='center', va='bottom', fontweight='bold', fontsize=14)
+                     f'{speed:.0f}', ha='center', va='bottom', fontweight='bold', fontsize=LABEL_FONT_SIZE)
 
         # English comment
         if reading_speed >= 300:
@@ -3819,7 +3834,7 @@ def generate_all_publication_plots(session_id, csv_file="reading_trace.csv"):
         else:
             assessment = "Slow - Take Your Time"
 
-        ax1.text(0.5, 0.95, assessment, transform=ax1.transAxes, fontsize=14,
+        ax1.text(0.5, 0.95, assessment, transform=ax1.transAxes, fontsize=LABEL_FONT_SIZE,
                  ha='center', va='top', fontweight='bold',
                  bbox=dict(boxstyle="round,pad=0.5", facecolor="yellow", alpha=0.8))
 
@@ -3854,10 +3869,10 @@ def generate_all_publication_plots(session_id, csv_file="reading_trace.csv"):
         if quality_data_clean:
             wedges, texts, autotexts = ax2.pie(quality_data_clean, labels=quality_explanations_clean,
                                                colors=quality_colors_clean, startangle=90,
-                                               textprops={'fontsize': 12, 'fontweight': 'bold'},
+                                               textprops={'fontsize': TICK_FONT_SIZE, 'fontweight': 'bold'},
                                                autopct='')
 
-        ax2.set_title('What Kind of Reader Are You?', fontweight='bold', fontsize=16)
+        ax2.set_title('What Kind of Reader Are You?', fontweight='bold', fontsize=TITLE_FONT_SIZE)
 
         # English comment
         explanation_text = """
@@ -3878,8 +3893,8 @@ Re-reading = You go back to check
         time_colors = ['lightcoral' if avg_fixation > typical_fixation else 'lightgreen', 'lightblue']
 
         bars = ax3.bar(time_labels, times, color=time_colors, alpha=0.8, edgecolor='black', linewidth=2)
-        ax3.set_title('How Long Do You Look at Words?', fontweight='bold', fontsize=16)
-        ax3.set_ylabel('Average Time (seconds)', fontweight='bold', fontsize=14)
+        ax3.set_title('How Long Do You Look at Words?', fontweight='bold', fontsize=TITLE_FONT_SIZE)
+        ax3.set_ylabel('Average Time (seconds)', fontweight='bold', fontsize=LABEL_FONT_SIZE)
         ax3.grid(True, alpha=0.3, axis='y')
 
         # English comment
@@ -4027,11 +4042,11 @@ def plot_reading_profile_radar(reading_speed, normal_pct, skip_pct, regressions,
     ax.set_theta_direction(-1)
 
     # English comment
-    plt.xticks(angles[:-1], categories, fontsize=12, fontweight='bold')
+    plt.xticks(angles[:-1], categories, fontsize=TICK_FONT_SIZE, fontweight='bold')
 
     # English comment
     ax.set_rlabel_position(0)
-    plt.yticks([20, 40, 60, 80, 100], ["20", "40", "60", "80", "100"], color="gray", size=10)
+    plt.yticks([20, 40, 60, 80, 100], ["20", "40", "60", "80", "100"], color="gray", fontsize=TICK_FONT_SIZE)
     plt.ylim(0, 100)
 
     # English comment
