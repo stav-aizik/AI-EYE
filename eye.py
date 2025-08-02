@@ -3494,7 +3494,7 @@ def generate_all_publication_plots(session_id, csv_file="reading_trace.csv"):
         print(f"Found {len(df)} fixations, creating plots...")
 
         # English comment
-        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(16, 12))
+        fig, ax1 = plt.subplots(figsize=(16, 8))
 
         # English comment
         words_with_times = []
@@ -3535,16 +3535,21 @@ def generate_all_publication_plots(session_id, csv_file="reading_trace.csv"):
             height = bar.get_height()
             ax1.text(bar.get_x() + bar.get_width() / 2., height + 0.02,
                      f'{time_val:.2f}s\n({look_count}x)', ha='center', va='bottom',
-                     fontsize=10, fontweight='bold')
+                     fontsize=TICK_FONT_SIZE - 4, fontweight='bold')
 
         # English comment
         ax1.text(0.02, 0.98,
                  'Red = Hard words (took long time)\nOrange = Medium words\nGreen = Easy words (quick reading)',
-                 transform=ax1.transAxes, fontsize=11, verticalalignment='top',
+                 transform=ax1.transAxes, fontsize=TICK_FONT_SIZE - 2, verticalalignment='top',
                  bbox=dict(boxstyle="round,pad=0.3", facecolor="white", alpha=0.8))
 
+        plt.tight_layout()
+        save_high_quality_plot(f'eye_movement_analysis_words_{session_id}')
+        show_plot()
+
         # English comment
-        # English comment
+        fig, ax2 = plt.subplots(figsize=(16, 8))
+
         # English comment
         if 'x' in df.columns and 'y' in df.columns:
             # English comment
@@ -3631,8 +3636,8 @@ def generate_all_publication_plots(session_id, csv_file="reading_trace.csv"):
                  label='Moving Average')
 
         ax2.set_title('Eye Movement Speed Over Time', fontweight='bold', fontsize=TITLE_FONT_SIZE)
-        ax2.set_xlabel('Time Elapsed (minutes)', fontweight='bold')
-        ax2.set_ylabel('Eye Movement Speed (pixels/sec)', fontweight='bold')
+        ax2.set_xlabel('Time Elapsed (minutes)', fontweight='bold', fontsize=LABEL_FONT_SIZE)
+        ax2.set_ylabel('Eye Movement Speed (pixels/sec)', fontweight='bold', fontsize=LABEL_FONT_SIZE)
         ax2.legend(fontsize=LEGEND_FONT_SIZE)
         ax2.grid(True, alpha=0.3)
 
@@ -3687,7 +3692,7 @@ def generate_all_publication_plots(session_id, csv_file="reading_trace.csv"):
                             facecolor='lightgray', alpha=0.8))
 
         plt.tight_layout()
-        save_high_quality_plot(f'eye_movement_analysis_{session_id}')
+        save_high_quality_plot(f'eye_movement_analysis_speed_{session_id}')
         show_plot()
 
         # English comment
@@ -4005,7 +4010,7 @@ Re-reading = You go back to check
         show_plot()
 
         # English comment
-        plot_reading_profile_radar(
+        plot_reading_profile_bar(
             reading_speed=reading_speed,
             normal_pct=normal_percentage,
             skip_pct=skip_percentage,
@@ -4037,44 +4042,28 @@ Re-reading = You go back to check
         return []
 
 
-def plot_reading_profile_radar(reading_speed, normal_pct, skip_pct, regressions, avg_fix_dur, session_id):
-    from math import pi
-
-    # English comment
+def plot_reading_profile_bar(reading_speed, normal_pct, skip_pct, regressions, avg_fix_dur, session_id):
+    """Display reading metrics as a bar chart."""
     categories = ['Reading Speed', 'Fixation %', 'Skip %', 'Regressions', 'Fixation Time']
     values = [
-        min(100, (reading_speed / 300) * 100),  # English comment
-        normal_pct,  # English comment
-        skip_pct,  # English comment
-        max(0, 100 - regressions * 10),  # English comment
-        max(0, 100 - (avg_fix_dur * 250))  # English comment
+        min(100, (reading_speed / 300) * 100),
+        normal_pct,
+        skip_pct,
+        max(0, 100 - regressions * 10),
+        max(0, 100 - (avg_fix_dur * 250))
     ]
 
-    values += values[:1]  # English comment
-    N = len(categories)
+    fig, ax = plt.subplots(figsize=(10, 6))
+    bars = ax.bar(categories, values, color=['#4C72B0', '#55A868', '#C44E52', '#8172B3', '#CCB974'])
+    ax.set_ylim(0, 100)
+    ax.set_ylabel('Score (0-100)', fontweight='bold', fontsize=LABEL_FONT_SIZE)
+    ax.set_title('Reading Profile Summary', fontweight='bold', fontsize=TITLE_FONT_SIZE, pad=20)
+    ax.tick_params(axis='x', rotation=45)
+    for bar, val in zip(bars, values):
+        ax.text(bar.get_x() + bar.get_width() / 2, val + 2, f'{val:.0f}',
+                ha='center', va='bottom', fontsize=TICK_FONT_SIZE, fontweight='bold')
 
-    angles = [n / float(N) * 2 * pi for n in range(N)]
-    angles += angles[:1]
-
-    fig, ax = plt.subplots(figsize=(8, 8), subplot_kw=dict(polar=True))
-
-    # English comment
-    ax.set_theta_offset(pi / 2)
-    ax.set_theta_direction(-1)
-
-    # English comment
-    plt.xticks(angles[:-1], categories, fontsize=TICK_FONT_SIZE, fontweight='bold')
-
-    # English comment
-    ax.set_rlabel_position(0)
-    plt.yticks([20, 40, 60, 80, 100], ["20", "40", "60", "80", "100"], color="gray", fontsize=TICK_FONT_SIZE)
-    plt.ylim(0, 100)
-
-    # English comment
-    ax.plot(angles, values, linewidth=2, linestyle='solid', color='purple')
-    ax.fill(angles, values, color='violet', alpha=0.4)
-    ax.set_title('Reading Profile Radar', size=16, fontweight='bold', pad=20)
-
+    plt.tight_layout()
     save_high_quality_plot(f'reading_radar_{session_id}')
     show_plot()
 
