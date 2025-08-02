@@ -7,7 +7,7 @@ import matplotlib.lines as mlines
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.pipeline import Pipeline
-from sklearn.metrics import mean_absolute_error, mean_squared_error
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 import tkinter as tk
 from tkinter import ttk
 from PIL import Image, ImageTk
@@ -279,7 +279,7 @@ def toggle_eye_tracking():
         # English comment
         if cursor_root and cursor_root.winfo_exists():
             cursor_root.deiconify()
-        pygame.display.set_mode((screen_w, screen_h), pygame.NOFRAME)
+        pygame.display.set_mode((screen_w, screen_h), pygame.FULLSCREEN)
 
 
 def get_tracking_timer_text():
@@ -692,6 +692,15 @@ class SimpleCalibrator:
             mae_total = (mae_x + mae_y) / 2.0
             mse_total = (mse_x + mse_y) / 2.0
 
+            r2_x = r2_score(Y[:, 0] * self.screen_width,
+                             pred_x * self.screen_width)
+            r2_y = r2_score(Y[:, 1] * self.screen_height,
+                             pred_y * self.screen_height)
+            r2_total = (r2_x + r2_y) / 2.0
+
+            screen_diag = math.sqrt(self.screen_width ** 2 + self.screen_height ** 2)
+            accuracy_pct = max(0.0, 100.0 * (1 - total_error / screen_diag))
+
             calibration_data = {
                 "points": self.samples,
                 "workpy_compatible": True,
@@ -701,6 +710,8 @@ class SimpleCalibrator:
                 "accuracy_pixels": total_error,
                 "mae_pixels": mae_total,
                 "mse_pixels": mse_total,
+                "r2_score": r2_total,
+                "accuracy_percent": accuracy_pct,
                 "calibration_timestamp": time.time(),
                 "screen_resolution": [self.screen_width, self.screen_height]
             }
@@ -708,8 +719,8 @@ class SimpleCalibrator:
             with open(self.calibration_file, "w") as f:
                 json.dump(calibration_data, f, indent=2)
 
-            print(f"Calibration saved! Accuracy: {total_error:.1f} pixels")
-            print(f"MAE: {mae_total:.2f} pixels, MSE: {mse_total:.2f} pixels^2")
+            print(f"Calibration saved! Accuracy: {accuracy_pct:.2f}% ({total_error:.1f} pixels)")
+            print(f"MAE: {mae_total:.2f} pixels, MSE: {mse_total:.2f} pixels^2, R^2: {r2_total:.3f}")
             return True
 
         except Exception as e:
@@ -2853,7 +2864,7 @@ def main():
         print(f"Cursor created at initial position: {INITIAL_CURSOR_POSITION}")
 
     # English comment
-    screen = pygame.display.set_mode((screen_w, screen_h), pygame.NOFRAME)
+    screen = pygame.display.set_mode((screen_w, screen_h), pygame.FULLSCREEN)
 
     # English comment
     font = pygame.font.SysFont("Arial", FONT_SIZE)
