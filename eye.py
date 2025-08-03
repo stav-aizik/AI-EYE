@@ -3675,7 +3675,8 @@ def generate_all_publication_plots(session_id, csv_file="reading_trace.csv"):
                          color='steelblue', alpha=0.8)
         ax1.set_yticks(range(len(word_stats)))
         ax1.set_yticklabels(word_stats.index, fontsize=TICK_FONT_SIZE)
-        ax1.set_xlabel('Total Time (seconds)', fontweight='bold')
+        ax1.set_xlabel('Total Time (seconds)', fontweight='bold', fontsize=LABEL_FONT_SIZE)
+        ax1.set_ylabel('Words', fontweight='bold', fontsize=LABEL_FONT_SIZE)
         ax1.set_title('Top 20 Words - Total Reading Time', fontweight='bold', fontsize=TITLE_FONT_SIZE)
 
         for i, (bar, value) in enumerate(zip(bars1, word_stats['total_time'])):
@@ -3688,7 +3689,8 @@ def generate_all_publication_plots(session_id, csv_file="reading_trace.csv"):
                          color='forestgreen', alpha=0.8)
         ax2.set_yticks(range(len(word_stats)))
         ax2.set_yticklabels(word_stats.index, fontsize=TICK_FONT_SIZE)
-        ax2.set_xlabel('Number of Fixations', fontweight='bold')
+        ax2.set_xlabel('Number of Fixations', fontweight='bold', fontsize=LABEL_FONT_SIZE)
+        ax2.set_ylabel('Words', fontweight='bold', fontsize=LABEL_FONT_SIZE)
         ax2.set_title('Top 20 Words - Fixation Count', fontweight='bold', fontsize=TITLE_FONT_SIZE)
 
         for i, (bar, value) in enumerate(zip(bars2, word_stats['fixation_count'])):
@@ -3871,7 +3873,7 @@ Focused Reading = You read carefully
 Quick Scanning = You skip unimportant words
 Re-reading = You go back to check
 """
-        ax2.text(1.3, 0.5, explanation_text, transform=ax2.transAxes, fontsize=11,
+        ax2.text(1.3, 0.5, explanation_text, transform=ax2.transAxes, fontsize=TICK_FONT_SIZE,
                  verticalalignment='center', bbox=dict(boxstyle="round,pad=0.3",
                                                        facecolor="lightgray", alpha=0.8))
 
@@ -3892,7 +3894,7 @@ Re-reading = You go back to check
         for bar, time_val in zip(bars, times):
             height = bar.get_height()
             ax3.text(bar.get_x() + bar.get_width() / 2., height + 0.01,
-                     f'{time_val:.2f}s', ha='center', va='bottom', fontweight='bold', fontsize=14)
+                     f'{time_val:.2f}s', ha='center', va='bottom', fontweight='bold', fontsize=LABEL_FONT_SIZE)
 
         # English comment
         if avg_fixation > 0.4:
@@ -3902,7 +3904,7 @@ Re-reading = You go back to check
         else:
             time_assessment = "Fast - Quick reader"
 
-        ax3.text(0.5, 0.95, time_assessment, transform=ax3.transAxes, fontsize=12,
+        ax3.text(0.5, 0.95, time_assessment, transform=ax3.transAxes, fontsize=LABEL_FONT_SIZE,
                  ha='center', va='top', fontweight='bold',
                  bbox=dict(boxstyle="round,pad=0.5", facecolor="lightyellow", alpha=0.8))
 
